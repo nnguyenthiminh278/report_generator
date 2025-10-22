@@ -1,0 +1,14 @@
+python-docx>=1.1.0
+docxtpl>=0.17.0
+Pillow>=10.0.0
+matplotlib>=3.8
+scipy>=1.11
+pandas>=2.2.0
+openpyxl>=3.1.2
+docx2pdf>=0.1.8
+pypandoc>=1.13
+tqdm>=4.67.1
+importlib-resources>=6.1.0
+
+[:platform_system != "Windows"]
+tkinterweb>=3.12.0

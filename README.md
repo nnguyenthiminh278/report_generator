@@ -95,8 +95,13 @@ report_generator/
 │   ├── report_utils.py         # Word, figure, PDF helpers
 │   ├── context_utils.py        # Template context creation
 │   └── templates/
-│       ├── template_MOS.docx   # Main report template
-│       └── template_annex.docx # Annex template
+│   |   ├── template_MOS.docx   # Main report template
+│   |   └── template_annex.docx # Annex template
+│   └── data/                   # CKD/CAD/HF/Oncorisk score files
+│       ├── CKD_273.xlsx
+│       ├── CAD_238.xlsx
+│       ├── HF2.xlsx
+│       └── Oncorisk_norm.xlsx
 │
 └── tests/
     └── test_basic.py

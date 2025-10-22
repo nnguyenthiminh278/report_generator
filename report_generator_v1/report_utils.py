@@ -21,7 +21,9 @@ from docx.shared import Mm
 from docx import Document
 from PIL import Image, ImageDraw, ImageFont
 
+from pathlib import Path
 
+from .figures.proteom_distribution import generate_all_proteom_distributions, DEFAULT_MODELS
 # ---------------------------------------------------------------------
 # 1️⃣ Evaluate thresholds from Word template
 # ---------------------------------------------------------------------
@@ -66,6 +68,25 @@ def evaluate_thresholds(mapped_scores):
 # ---------------------------------------------------------------------
 # 2️⃣ Add figures to report with dynamic overlay text
 # ---------------------------------------------------------------------
+
+def stage_proteom_figs_for_add_figures(
+    working_dir: Path, data_dir: Path, *,
+    languages=("DE",),                     # pass ("DE",) or ("EN",) based on the checkbox
+    numbering=None,                        # {"CKD":7,"CAD":8,"HF":9,"Oncorisk":10}
+) -> dict:
+    """
+    Generate CKD/CAD/HF/Oncorisk distribution plots into 'working_dir' with numbered filenames
+    so your add_figures() will auto-insert them as fig7..fig10.
+    """
+    paths = generate_all_proteom_distributions(
+        work_dir=working_dir,     # Mustertabelle location
+        data_dir=data_dir,        # /data with model XLSX files
+        dest_dir=working_dir,     # IMPORTANT: save where add_figures() scans
+        languages=languages,
+        numbering=numbering or {"CKD":7,"CAD":8,"HF":9,"Oncorisk":10},
+    )
+    return paths
+
 def add_figures(tpl, working_dir, context, prefix="fig", size_rules=None):
     """
     Add all figures matching '*_[0-9].png' into the Word report context.

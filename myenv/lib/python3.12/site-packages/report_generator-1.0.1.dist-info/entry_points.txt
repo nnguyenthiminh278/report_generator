@@ -1,0 +1,2 @@
+[console_scripts]
+report-generator = report_generator_v1.main:main
