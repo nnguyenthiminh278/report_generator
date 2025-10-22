@@ -1,0 +1,43 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Build outputs / packaging
+build/
+dist/
+*.egg-info/
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store
+
+# Project outputs
+output/
+reports/
+tmp/
+*.png
+*.pdf
+
+# Data (avoid committing real patient data!)
+data/*
+!data/.gitkeep
+!data/README.md
+# If you keep small sample files for tests, whitelist them here:
+# !data/sample_*.xlsx
+
+# Notebooks’ checkpoints
+.ipynb_checkpoints/
+
+# Credentials (if you ever add)
+.env
+*.secret
+
+
