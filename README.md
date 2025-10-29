@@ -94,6 +94,8 @@ report_generator/
 │   ├── excel_utils.py          # Excel data reading
 │   ├── report_utils.py         # Word, figure, PDF helpers
 │   ├── context_utils.py        # Template context creation
+│   ├── peptide_processor.py    # Patient's Peptide List creation
+│   ├── peptide_pdf.py          # Patient's Peptide List conversion (to pdf)
 │   └── templates/
 │   |   ├── template_MOS.docx   # Main report template
 │   |   └── template_annex.docx # Annex template
@@ -102,6 +104,9 @@ report_generator/
 │       ├── CAD_238.xlsx
 │       ├── HF2.xlsx
 │       └── Oncorisk_norm.xlsx
+│       ├── Healthy_patients_female_n836_log2_stats_nonNeg.xlsx
+│       ├── Healthy_patients_male_n917_log2_stats_nonNeg.xlsx
+│       └── ML2.5_21082025_seq.xls
 │
 └── tests/
     └── test_basic.py
@@ -154,4 +159,4 @@ importlib.resources.path("report_generator_v1.templates", "template_MOS.docx")
 
 report_generator_v1/data/
 
-- Make sure your patient data (in excel) is include in the selected dir by the user e.g. input_patient_1234
+- Make sure your patient data (in excel, txt) is include in the selected dir by the user e.g. input_patient_1234
