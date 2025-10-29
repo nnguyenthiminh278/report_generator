@@ -150,4 +150,8 @@ and referenced with:
 
 importlib.resources.path("report_generator_v1.templates", "template_MOS.docx")
 
+- Make sure your score of each model are included in:
+
+report_generator_v1/data/
+
 - Make sure your patient data (in excel) is include in the selected dir by the user e.g. input_patient_1234
