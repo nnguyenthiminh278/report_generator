@@ -13,6 +13,7 @@ setup(
         "report_generator_v1": [
             "templates/*.docx",
             "data/*.xlsx",
+            "data/*.xls", 
         ]
     },
     install_requires=Path("requirements.txt").read_text(encoding="utf-8").splitlines(),

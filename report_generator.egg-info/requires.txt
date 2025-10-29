@@ -5,8 +5,10 @@ matplotlib>=3.8
 scipy>=1.11
 pandas>=2.2.0
 openpyxl>=3.1.2
+xlrd>=2.0.1
 docx2pdf>=0.1.8
 pypandoc>=1.13
+reportlab>=4.0
 tqdm>=4.67.1
 importlib-resources>=6.1.0
 

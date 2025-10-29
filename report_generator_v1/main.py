@@ -15,6 +15,9 @@ from .report_utils import (
 from pathlib import Path
 import os
 
+from .peptide_processor import build_peptide_report_excel
+
+
 def _get_package_data_dir() -> Path:
     """
     Returns a concrete filesystem Path to report_generator_v1/data,
@@ -51,6 +54,15 @@ def _get_template(lang: str, base: str) -> DocxTemplate:
             pass
     return _load_template_from_package(base)
 
+def _normalize_sex(gender_raw: str) -> str:
+    """
+    Map DB gender strings to 'male' or 'female' for the PDF footer text.
+    Accepts German/English variants.
+    """
+    g = (gender_raw or "").strip().lower()
+    female_markers = {"weiblich", "w", "frau", "female", "f"}
+    return "female" if g in female_markers else "male"
+
 
 class ReportGeneratorApp:
     def __init__(self, root):
@@ -78,8 +90,11 @@ class ReportGeneratorApp:
         self.lang_combo = ttk.Combobox(root, values=["DE", "EN"], state="readonly", textvariable=self.lang_var, width=6)
         self.lang_combo.grid(row=3, column=1, padx=5, pady=5, sticky="w")
 
-        tk.Button(root, text="Generate Report", command=self.generate_report).grid(row=4, column=0, columnspan=2, pady=10)
-        tk.Button(root, text="Generate Annex", command=self.generate_annex).grid(row=5, column=0, columnspan=2, pady=10)
+        tk.Button(root, text="Generate Report", command=self.generate_report)\
+            .grid(row=4, column=0, columnspan=2, pady=10)
+        tk.Button(root, text="Generate Annex", command=self.generate_annex)\
+            .grid(row=5, column=0, columnspan=2, pady=10)
+
 
     def select_directory(self):
         self.working_dir = filedialog.askdirectory()
@@ -178,8 +193,64 @@ class ReportGeneratorApp:
         tpl.save(output_path)
         messagebox.showinfo("Success", f"Annex saved as {output_path}")
 
+        # Always create the Peptides PDF as part of Annex
+        try:
+            self.generate_peptides_pdf(silent=False)  # silent to avoid extra popups
+        except Exception as e:
+            messagebox.showwarning("Peptides PDF", f"Skipped generating peptides PDF:\n{e}")
+
         # Convert to PDF automatically
         convert_docx_to_pdf_with_progress(self.root, output_path, self.working_dir)
+
+        # Generate peptide list in pdf format
+        
+    DEFAULT_PEPTIDES_XLSX = "report_peptide_result_final.xlsx"
+
+    def generate_peptides_pdf(self, silent: bool = False):
+        if not self.working_dir:
+            if not silent:
+                messagebox.showerror("Error", "Please select a working directory first.")
+            return
+
+        patient_data = get_patient(self.search_type.get(), self.search_value_entry.get().strip())
+        if not patient_data:
+            if not silent:
+                messagebox.showerror("Error", "No patient found")
+            return
+
+        first_name, last_name, dob, gender, patient_id, sample_id, analysis_id, sample_date, address, diagnosis = patient_data
+
+        # 1) Build the peptide Excel in the working folder
+        try:
+            excel_out = build_peptide_report_excel(
+                working_dir=self.working_dir,
+                package_data_dir=str(_get_package_data_dir()),
+                gender_raw=gender,
+            )
+        except Exception as e:
+            if not silent:
+                messagebox.showerror("Error building peptide Excel", str(e))
+            return
+
+        # 2) Export the PDF next to it
+        pdf_path = Path(self.working_dir) / f"{last_name}_{first_name}_Peptides.pdf"
+        patient_header = f"{patient_id} - {sample_id} {last_name} {first_name}"
+        sex = _normalize_sex(gender)
+
+        try:
+            from .peptide_pdf import export_peptides_pdf
+            export_peptides_pdf(
+                excel_file=excel_out,
+                pdf_file=str(pdf_path),
+                patient_id=patient_header,
+                sex=sex,
+                landscape_mode=True,
+            )
+            if not silent:
+                messagebox.showinfo("Success", f"Peptides PDF saved as:\n{pdf_path}")
+        except Exception as e:
+            if not silent:
+                messagebox.showerror("Error", f"Failed to create peptides PDF:\n{e}")
 
 
 def main():

@@ -8,11 +8,12 @@ scipy>=1.11
 # Excel and data handling
 pandas>=2.2.0
 openpyxl>=3.1.2
+xlrd>=2.0.1
 
 # PDF conversion options
 docx2pdf>=0.1.8         # used on Windows
 pypandoc>=1.13          # fallback converter if needed
-
+reportlab>=4.0
 # GUI
 tkinterweb>=3.12.0; platform_system != "Windows"  # optional, helps with Tkinter rendering
 tqdm>=4.67.1            # progress helper
